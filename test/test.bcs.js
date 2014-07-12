@@ -281,5 +281,23 @@ describe("BCS.Helpers", function () {
 		requests[1].respond(200, {'Content-Type': 'application/json'}, JSON.stringify([0, 1, 1, 0, 1, 0]));
 	});
 
+	it('getRunningProcesses should retrieve a list of running processes', function (done) {
+		bcs.helpers.getRunningProcesses()
+			.then(function (procs) {
+				procs.should.have.length(1);
+				procs[0].id.should.equal(0);
+				procs[0]['current_state'].should.equal(0);
+				procs[0].waiting.should.equal(false);
+				procs[0].paused.should.equal(false);
+				procs[0].running.should.equal(true);
+				procs[0].timers.should.eql([2390889,2390889,2390889,2390889]);
+				done();
+			})
+			.catch(done);
+
+		requests[1].respond(200, {'Content-Type': 'application/json'}, JSON.stringify({
+			"process":[{"running":true,"paused":false,"current_state":0,"waiting":false,"timers":[2390889,2390889,2390889,2390889]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]}]			
+		}));
+	});
 		
 });

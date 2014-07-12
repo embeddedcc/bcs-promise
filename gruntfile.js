@@ -48,7 +48,8 @@ grunt.initConfig({
 	*/
 	uglify: {
 		options: {
-			banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */'
+			banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */',
+			mangle: false
 		},
 		index: {
 			files: {
