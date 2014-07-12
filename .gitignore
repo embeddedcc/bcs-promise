@@ -1,0 +1,8 @@
+node_modules
+site/*.html
+site/scripts
+site/styles
+site/img
+site/dist
+_site
+doc
