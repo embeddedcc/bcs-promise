@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>DocStrap Index</title>
+	<title>DocStrap Namespaces</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -70,64 +70,99 @@
 					
 
 
+	<h1 class="page-title">Namespaces</h1>
+<section>
+
+<header>
+    <h2>
+    
+    </h2>
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+
+        
+<dl class="details">
 	
-	<span class="page-title">Index</span>
-	
-	
-
-
-
-
-
-
-
-
-
-
-
 
 	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
 	
 
 
 
+	
+
+	
+
+	
+
+	
+</dl>
 
 
-    <section class="readme-section">
-        <article><h1>BCS Promises</h1>
-<p>A JavaScript library to interface with the BCS using Promises/Futures.  Primarily tested in the browser, but should work with or easily adapt to node.js.</p>
-<h2>Dependencies</h2>
-<ul>
-<li><a href="https://github.com/iriscouch/browser-request" title="iriscouch/browser-request · GitHub">browser-request</a> - for making asynchronous calls to the BCS</li>
-<li><a href="https://github.com/kriskowal/q" title="kriskowal/q · GitHub">Q</a> - for Promises support</li>
-</ul>
-<p>The versions of these dependencies used for testing are included in this repository in the vendor/js directory, but other versions may work as well.</p>
-<h2>Usage</h2>
-<h3>BCS.Device</h3>
-<p>BCS.Device provides a very thin wrapper to communicate with the BCS.  When initializing the BCS.Device object, the BCS is queried to ensure connectivity and to determine the type of the device.  You should wait until the ready event is triggered before using the API.</p>
-<p>For example:</p>
-<pre><code class="lang-javascript">var bcs = new BCS.Device('192.168.0.63');
-bcs.on('ready', function () {
-    bcs.read('device').then(function (response) {
-        console.log(&quot;BCS Name: &quot; + response.name);
-    });
-});</code></pre>
-<h3>BCS.Helpers</h3>
-<p>The constructor for BCS.Device also adds a helpers property that is an instance of BCS.Helpers.  This class provides some helper methods to make working with data from the BCS easier.</p>
-<p>For example:</p>
-<pre><code class="lang-javascript">var bcs = new BCS.Device('192.168.0.63');
-bcs.on('ready', function () {
-    bcs.helpers.getTempValues().then(function (temps) {
-        console.log(&quot;Temp probe 1 temperature: &quot; + response[0]);
-    });
-});</code></pre>
-<h2>License</h2>
-<p>Copyright (c) 2014 Brent Rahn
-Licensed under the MIT license.</p></article>
-    </section>
+        
+    
+    </div>
 
+    
 
+    
 
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="BCS.Device.html">Device</a></dt>
+            <dd></dd>
+        
+            <dt><a href="BCS.Helpers.html">Helpers</a></dt>
+            <dd></dd>
+        
+            <dt><a href="BCS.Time.html">Time</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="namespaces.html#BCS"><a href="BCS.html">BCS</a></a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
