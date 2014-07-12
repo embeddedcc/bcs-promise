@@ -188,6 +188,21 @@ BCS.Helpers = (function () {
 			});
 	};
 	
+	/**
+	 * Get running processes
+	 * @returns {Promise.Object[]} Promise of a list of running processes with some runtime data
+	 */	
+	Helpers.prototype.getRunningProcesses = function () {
+		return this.device.read('poll')
+		.then(function (poll) {
+			return Q.all(poll.process.map(function (p, i) {
+					p.id = i;
+					return p;
+				})
+				.filter(function (p) {return p.running;}));
+		});
+	};
+	
 	return Helpers;
 }());
 
