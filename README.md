@@ -14,24 +14,28 @@ BCS.Device provides a very thin wrapper to communicate with the BCS.  When initi
 
 For example:
 
-    var bcs = new BCS.Device('192.168.0.63');
-    bcs.on('ready', function () {
-        bcs.read('device').then(function (response) {
-            console.log("BCS Name: " + response.name);
-        });
+```javascript
+var bcs = new BCS.Device('192.168.0.63');
+bcs.on('ready', function () {
+    bcs.read('device').then(function (response) {
+        console.log("BCS Name: " + response.name);
     });
-	
+});
+```
+
 ### BCS.Helpers
 The constructor for BCS.Device also adds a helpers property that is an instance of BCS.Helpers.  This class provides some helper methods to make working with data from the BCS easier.
 
 For example:
 
-    var bcs = new BCS.Device('192.168.0.63');
-    bcs.on('ready', function () {
-        bcs.helpers.getTempValues().then(function (temps) {
-            console.log("Temp probe 1 temperature: " + response[0]);
-        });
+```javascript
+var bcs = new BCS.Device('192.168.0.63');
+bcs.on('ready', function () {
+    bcs.helpers.getTempValues().then(function (temps) {
+        console.log("Temp probe 1 temperature: " + response[0]);
     });
+});
+```
 	
 ## License
 Copyright (c) 2014 Brent Rahn
