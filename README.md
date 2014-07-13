@@ -1,4 +1,4 @@
-# BCS Promises
+# BCS Promise
 A JavaScript library to interface with the BCS using Promises/Futures.  Primarily tested in the browser, but should work with or easily adapt to node.js.
 
 ## Dependencies
