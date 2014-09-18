@@ -32,7 +32,7 @@ For example:
 var bcs = new BCS.Device('192.168.0.63');
 bcs.on('ready', function () {
     bcs.helpers.getTempValues().then(function (temps) {
-        console.log("Temp probe 1 temperature: " + response[0]);
+        console.log("Temp probe 1 temperature: " + temps[0]);
     });
 });
 ```
