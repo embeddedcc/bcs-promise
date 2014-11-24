@@ -9,7 +9,7 @@
  * @namespace
  */
 var BCS = {
-	version: '0.1.0'
+	version: '0.1.1'
 };
 
 BCS.Helpers = (function () {
@@ -125,7 +125,7 @@ BCS.Helpers = (function () {
 				.filter(function (p) {return p.running;}));
 		});
 	};
-	
+		
 	return Helpers;
 }());
 
@@ -183,6 +183,8 @@ BCS.Device = (function () {
 		} else {
 			this._callbacks[event].push(callback);
 		}
+		
+		return this;
 	};
 	
 	/**
