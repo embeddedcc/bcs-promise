@@ -9,7 +9,7 @@
  * @namespace
  */
 var BCS = {
-	version: '0.1.1'
+	version: '0.1.2'
 };
 
 BCS.Helpers = (function () {
@@ -125,6 +125,19 @@ BCS.Helpers = (function () {
 				.filter(function (p) {return p.running;}));
 		});
 	};
+	
+	/**
+	 * Get Processes objects
+	 * @returns {Promise.Object[]} Promise of a list of processes
+	 */	
+	Helpers.prototype.getProcesses = function () {
+		var promises = [];
+		for(var i = 0; i < 8; i++) {
+			promises.push(this.device.read('process/' + i));
+		}
+		return Q.all(promises);		
+	};
+	
 		
 	return Helpers;
 }());

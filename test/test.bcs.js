@@ -299,5 +299,28 @@ describe("BCS.Helpers", function () {
 			"process":[{"running":true,"paused":false,"current_state":0,"waiting":false,"timers":[2390889,2390889,2390889,2390889]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]},{"running":false,"paused":false,"current_state":255,"waiting":false,"timers":[0,0,0,0]}]			
 		}));
 	});
+	
+	it('getProcesses should retrieve a list of processes', function (done) {
+		bcs.helpers.getProcesses()
+			.then(function (processes) {
+				processes.should.have.length(8);
+				processes.forEach(function (proc, i) {
+					proc.should.have.property('name', 'Process ' + i);
+					proc.should.have.property('running').and.be.false;
+					proc.should.have.property('paused').and.be.false;
+					proc.should.have.property('run_on_startup').and.be.false;
+					proc.should.have.property('display');
+				});
+				done();
+			})
+			.catch(done);
+
+			requests.slice(1).forEach(function (req, i) {
+				req.respond(200, 
+					{'Content-Type': 'application/json'}, 
+					'{"name":"Process ' + i + '","running":false,"paused":false,"run_on_startup":false,"display":0,"states":["State 0","State 1","State 2","State 3","State 4","State 5","State 6","State 7"]}');
+			});
+	});
+	
 		
 });
