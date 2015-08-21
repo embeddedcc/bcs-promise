@@ -9,7 +9,7 @@
  * @namespace
  */
 var BCS = {
-	version: '0.1.2'
+	version: '0.1.3'
 };
 
 BCS.Helpers = (function () {
@@ -147,6 +147,7 @@ BCS.Device = (function () {
 	 * Handles communication with BCS.
 	 * @constructs BCS.Device
 	 * @param {string} address IP Address for BCS
+	 * @param {options} options for BCS.  Currently only supports authentication. ex. `{auth: {username: 'x', password: 'y'}}`
 	 * @property ready {boolean} Ready to communicate with BCS (other properties are not valid until ready is true)
 	 * @property type {string} BCS type, eg `BCS-460`
 	 * @property version {string} BCS firmware version, eg, `4.0.0`
@@ -155,8 +156,9 @@ BCS.Device = (function () {
 	 * @property inputCount {number} The number of discrete inputs supported by the BCS hardware
 	 * @property outputCount {number} The number of outputs supported by the BCS hardware
 	 */
-	var Device = function (address) {
+	var Device = function (address, options) {
 		var obj = this;
+		var parsedAuth;
 		this.address = address;
 		this.ready = false;
 		this.type = null;
@@ -164,6 +166,24 @@ BCS.Device = (function () {
 		this.helpers = new BCS.Helpers(this);
 		this.url = (this.address.match(/^http/) ? '' : 'http://') + this.address + (this.address.match(/\/$/) ? '' : '/') + 'api/';
 		this._callbacks = {};
+		this.options = options || {};
+
+		/* parse auth credentials from URL if present and auth is not set in options */
+		if(!this.options.auth && this.url.match(/http:\/\/(.+):(.+)@/))
+		{
+			parsedAuth = this.url.match(/http:\/\/(.+):(.+)@/).slice(1);
+			this.options.auth = {
+				username: parsedAuth[0],
+				password: parsedAuth[1]
+			}
+			this.url = this.url.replace(/(http:\/\/)(.+:.+@)/, '$1');
+		}
+
+		if(this.options.auth) {
+		  this.request = request.defaults({auth: this.options.auth});
+		} else {
+		  this.request = request;
+		}
 		
 		this.read('device')
 			.then(function (body) {
@@ -227,7 +247,7 @@ BCS.Device = (function () {
 	 */
 	Device.prototype.read = function (resource) {
 		var deferred = Q.defer();		
-		request({
+		this.request({
 				url: this.url + resource,
 				json: true
 			}, 
@@ -251,7 +271,7 @@ BCS.Device = (function () {
 	 */
 	Device.prototype.write = function (resource, data) {
 		var deferred = Q.defer();
-		request({
+		this.request({
 				url: this.url + resource,
 				json: data,
 				method: 'POST'
