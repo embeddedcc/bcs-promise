@@ -175,7 +175,7 @@ BCS.Device = (function () {
 			this.options.auth = {
 				username: parsedAuth[0],
 				password: parsedAuth[1]
-			}
+			};
 			this.url = this.url.replace(/(http:\/\/)(.+:.+@)/, '$1');
 		}
 
