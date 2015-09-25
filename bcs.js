@@ -9,7 +9,7 @@
  * @namespace
  */
 var BCS = {
-	version: '0.1.3'
+	version: '0.1.4'
 };
 
 BCS.Helpers = (function () {
@@ -193,7 +193,7 @@ BCS.Device = (function () {
 				obj.trigger('ready');
 			})
 			.catch(function (error) {
-				obj.trigger('notReady', error);
+				obj.trigger('notReady', [error]);
 			});
 		
 		return this;
