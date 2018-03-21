@@ -5,7 +5,7 @@
 
 /*jshint -W065 */
 /*global Q */
-/** 
+/**
  * @namespace
  */
 var BCS = {
@@ -13,7 +13,7 @@ var BCS = {
 };
 
 BCS.Helpers = (function () {
-	/** 
+	/**
 	 * Creates a `BCS.Helpers` Object
 	 *
 	 * Helper methods for accessing common values from the BCS.
@@ -24,11 +24,11 @@ BCS.Helpers = (function () {
 	var Helpers = function (device) {
 		this.device = device;
 	};
-	
+
 	/**
 	 * Get Temperature Probe objects
 	 * @returns {Promise.Object[]} Promise of a list of temperature probes
-	 */	
+	 */
 	Helpers.prototype.getProbes = function () {
 		var promises = [];
 		for(var i = 0; i < this.device.probeCount; i++) {
@@ -36,21 +36,21 @@ BCS.Helpers = (function () {
 		}
 		return Q.all(promises);
 	};
-	
+
 	/**
 	 * Get current temperature values
 	 * @returns {Promise.number[]} Promise of a list of temperatures
-	 */	
+	 */
 	Helpers.prototype.getTempValues = function () {
 		return this.device.read('temp').then(function (response) {
 			return Q.all(response.map(function (temp) { return temp / 10.0; }));
 		});
 	};
-	
+
 	/**
 	 * Get Discrete Input objects
 	 * @returns {Promise.Object[]} Promise of a list of discrete inputs
-	 */	
+	 */
 	Helpers.prototype.getDins = function () {
 		var promises = [];
 		for(var i = 0; i < this.device.inputCount; i++) {
@@ -62,7 +62,7 @@ BCS.Helpers = (function () {
 	/**
 	 * Get current input values
 	 * @returns {Promise.number[]} Promise of a list of on/off values for Dins
-	 */	
+	 */
 	Helpers.prototype.getDinValues = function () {
 		return this.device.read('din');
 	};
@@ -70,31 +70,31 @@ BCS.Helpers = (function () {
 	/**
 	 * Get Outputs objects
 	 * @returns {Promise.Object[]} Promise of a list of outputs
-	 */	
+	 */
 	Helpers.prototype.getOutputs = function () {
 		var promises = [];
 		for(var i = 0; i < this.device.outputCount; i++) {
 			promises.push(this.device.read('output/' + i));
 		}
-		return Q.all(promises);		
+		return Q.all(promises);
 	};
-	
+
 	/**
 	 * Get current output values
 	 * @returns {Promise.number[]} Promise of a list of on/off values for outputs
-	 */	
+	 */
 	Helpers.prototype.getOutputValues = function () {
 		return this.device.read('output');
 	};
-	
+
 	/**
 	 * Get current timer values
 	 * @param {Number} Process number
 	 * @returns {Promise.Array.<BCS.Time>} Promise of a list of `BCS.Time` objects
-	 */	
+	 */
 	Helpers.prototype.getTimerValues = function (process) {
 		return this.device.read('process/' + process + '/timer')
-			.then(function (response) { 
+			.then(function (response) {
 				return Q.all(response.map(function (timer) { return new BCS.Time(timer.value); }));
 			});
 	};
@@ -103,18 +103,18 @@ BCS.Helpers = (function () {
 	 * Get current timer values as strings
 	 * @param {Number} Process number
 	 * @returns {Promise.string[]} Promise of a list of times as strings
-	 */	
+	 */
 	Helpers.prototype.getTimerStrings = function (process) {
 		return this.getTimerValues(process)
-			.then(function (timers) { 
+			.then(function (timers) {
 				return Q.all(timers.map(function (timer) { return timer.toString(); }));
 			});
 	};
-	
+
 	/**
 	 * Get running processes
 	 * @returns {Promise.Object[]} Promise of a list of running processes with some runtime data
-	 */	
+	 */
 	Helpers.prototype.getRunningProcesses = function () {
 		return this.device.read('poll')
 		.then(function (poll) {
@@ -125,25 +125,25 @@ BCS.Helpers = (function () {
 				.filter(function (p) {return p.running;}));
 		});
 	};
-	
+
 	/**
 	 * Get Processes objects
 	 * @returns {Promise.Object[]} Promise of a list of processes
-	 */	
+	 */
 	Helpers.prototype.getProcesses = function () {
 		var promises = [];
 		for(var i = 0; i < 8; i++) {
 			promises.push(this.device.read('process/' + i));
 		}
-		return Q.all(promises);		
+		return Q.all(promises);
 	};
-	
-		
+
+
 	return Helpers;
 }());
 
 BCS.Device = (function () {
-	/** 
+	/**
 	 * Handles communication with BCS.
 	 * @constructs BCS.Device
 	 * @param {string} address IP Address for BCS
@@ -184,7 +184,7 @@ BCS.Device = (function () {
 		} else {
 		  this.request = request;
 		}
-		
+
 		this.read('device')
 			.then(function (body) {
 				obj.ready = true;
@@ -195,16 +195,16 @@ BCS.Device = (function () {
 			.catch(function (error) {
 				obj.trigger('notReady', [error]);
 			});
-		
+
 		return this;
 	};
-	
+
 	Device.prototype = {
 		get probeCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 4 : 8); },
 		get inputCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 4 : 8); },
 		get outputCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 6 : 18); }
 	};
-	
+
 	/**
 	 * Add an event listener
 	 * @param {String} event The event to respond to.  ('ready', 'notReady')
@@ -216,10 +216,10 @@ BCS.Device = (function () {
 		} else {
 			this._callbacks[event].push(callback);
 		}
-		
+
 		return this;
 	};
-	
+
 	/**
 	 * Trigger an event listener
 	 * @private
@@ -234,8 +234,8 @@ BCS.Device = (function () {
 			});
 		}
 	};
-	
-	/** 
+
+	/**
 	 * Read from the BCS API
 	 * @example
 	 *    var bcs = BCS.Device("192.168.0.63");
@@ -246,23 +246,23 @@ BCS.Device = (function () {
 	 * @returns {Promise.Object} A Promise of the response from the API
 	 */
 	Device.prototype.read = function (resource) {
-		var deferred = Q.defer();		
+		var deferred = Q.defer();
 		this.request({
 				url: this.url + resource,
 				json: true
-			}, 
+			},
 			function (e, _, body) {
 				if(e) {
 					deferred.reject(e);
 					return;
 				}
-			
+
 				deferred.resolve(body);
 			});
-			
+
 			return deferred.promise;
 	};
-	
+
 	/**
 	 * Write to the BCS API
 	 * @param {String} resource The API endpoint to update
@@ -280,22 +280,22 @@ BCS.Device = (function () {
 					deferred.reject(e);
 					return;
 				}
-			
+
 				deferred.resolve(body);
 		});
-		
+
 		return deferred.promise;
 	};
-	
+
 	return Device;
 }());
 
 BCS.Time = (function () {
-	/** 
+	/**
 	 * Makes it easier to work with time values from the BCS
 	 * @constructs BCS.Time
 	 * @param {Number} time Time in tenths of a second
-	 */	
+	 */
 	var Time = function (time) {
 		this.value = time / 10 || 0;
 		return this;
@@ -321,7 +321,7 @@ BCS.Time = (function () {
 	};
 
 	/**
-	 * Convert a string into a BCS.Time object 
+	 * Convert a string into a BCS.Time object
 	 * @example
 	 *    var timeobj = BCS.Time(1000);
 	 *    BCS.Time.fromString(timeobj.toString()) == timeobj;
@@ -337,7 +337,7 @@ BCS.Time = (function () {
 			// Don't process more than 3 :'s
 			if(i > 2) { return new Time(value); }
 
-			value += parseInt(parts[i]) * Math.pow(60, i);	
+			value += parseInt(parts[i]) * Math.pow(60, i);
 		}
 
 		return new Time(value * 10);
