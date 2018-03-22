@@ -4,12 +4,11 @@
  */
 
 /*jshint -W065 */
-/*global Q */
 /**
  * @namespace
  */
 var BCS = {
-	version: '0.1.4'
+	version: '0.2.0'
 };
 
 BCS.Helpers = (function () {
@@ -34,7 +33,7 @@ BCS.Helpers = (function () {
 		for(var i = 0; i < this.device.probeCount; i++) {
 			promises.push(this.device.read('temp/' + i));
 		}
-		return Q.all(promises);
+		return Promise.all(promises);
 	};
 
 	/**
@@ -43,7 +42,7 @@ BCS.Helpers = (function () {
 	 */
 	Helpers.prototype.getTempValues = function () {
 		return this.device.read('temp').then(function (response) {
-			return Q.all(response.map(function (temp) { return temp / 10.0; }));
+			return Promise.all(response.map(function (temp) { return temp / 10.0; }));
 		});
 	};
 
@@ -56,7 +55,7 @@ BCS.Helpers = (function () {
 		for(var i = 0; i < this.device.inputCount; i++) {
 			promises.push(this.device.read('din/' + i));
 		}
-		return Q.all(promises);
+		return Promise.all(promises);
 	};
 
 	/**
@@ -76,7 +75,7 @@ BCS.Helpers = (function () {
 		for(var i = 0; i < this.device.outputCount; i++) {
 			promises.push(this.device.read('output/' + i));
 		}
-		return Q.all(promises);
+		return Promise.all(promises);
 	};
 
 	/**
@@ -95,7 +94,7 @@ BCS.Helpers = (function () {
 	Helpers.prototype.getTimerValues = function (process) {
 		return this.device.read('process/' + process + '/timer')
 			.then(function (response) {
-				return Q.all(response.map(function (timer) { return new BCS.Time(timer.value); }));
+				return Promise.all(response.map(function (timer) { return new BCS.Time(timer.value); }));
 			});
 	};
 
@@ -107,7 +106,7 @@ BCS.Helpers = (function () {
 	Helpers.prototype.getTimerStrings = function (process) {
 		return this.getTimerValues(process)
 			.then(function (timers) {
-				return Q.all(timers.map(function (timer) { return timer.toString(); }));
+				return Promise.all(timers.map(function (timer) { return timer.toString(); }));
 			});
 	};
 
@@ -118,7 +117,7 @@ BCS.Helpers = (function () {
 	Helpers.prototype.getRunningProcesses = function () {
 		return this.device.read('poll')
 		.then(function (poll) {
-			return Q.all(poll.process.map(function (p, i) {
+			return Promise.all(poll.process.map(function (p, i) {
 					p.id = i;
 					return p;
 				})
@@ -135,7 +134,7 @@ BCS.Helpers = (function () {
 		for(var i = 0; i < 8; i++) {
 			promises.push(this.device.read('process/' + i));
 		}
-		return Q.all(promises);
+		return Promise.all(promises);
 	};
 
 
@@ -180,9 +179,9 @@ BCS.Device = (function () {
 		}
 
 		if(this.options.auth) {
-		  this.request = request.defaults({auth: this.options.auth});
+			this.headers = { Authorization: 'Basic ' + base64.encode(username + ":" + password) };
 		} else {
-		  this.request = request;
+		  this.headers = {};
 		}
 
 		this.read('device')
@@ -202,7 +201,7 @@ BCS.Device = (function () {
 	Device.prototype = {
 		get probeCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 4 : 8); },
 		get inputCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 4 : 8); },
-		get outputCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 6 : 18); }
+		get outputCount() { return !this.ready ? null : (this.type === 'BCS-460' ? 6 : this.type === 'BCS-482' ? 16 : 18); }
 	};
 
 	/**
@@ -246,21 +245,10 @@ BCS.Device = (function () {
 	 * @returns {Promise.Object} A Promise of the response from the API
 	 */
 	Device.prototype.read = function (resource) {
-		var deferred = Q.defer();
-		this.request({
-				url: this.url + resource,
-				json: true
-			},
-			function (e, _, body) {
-				if(e) {
-					deferred.reject(e);
-					return;
-				}
-
-				deferred.resolve(body);
+		return fetch(this.url + resource, {headers: this.headers})
+			.then(function (body) {
+				return body.json();
 			});
-
-			return deferred.promise;
 	};
 
 	/**
@@ -270,21 +258,13 @@ BCS.Device = (function () {
 	 * @returns {Promise.Object} A Promise of the response from the API
 	 */
 	Device.prototype.write = function (resource, data) {
-		var deferred = Q.defer();
-		this.request({
-				url: this.url + resource,
-				json: data,
-				method: 'POST'
-			}, function (e, xhr, body) {
-				if(e && xhr.statusCode !== 202) {
-					deferred.reject(e);
-					return;
-				}
-
-				deferred.resolve(body);
+		return fetch(this.url + resource, {
+			method: 'POST',
+			headers: this.headers,
+			body: JSON.stringify(data)})
+		.then(function (body) {
+			return body.json();
 		});
-
-		return deferred.promise;
 	};
 
 	return Device;

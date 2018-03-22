@@ -17,8 +17,7 @@ grunt.initConfig({
 	*/
 	jshint: {
 		all: [
-			'bcs.js',
-			'test/*.js'
+			'bcs.js'
 		],
 		options: {
 			camelcase: true,
@@ -38,8 +37,6 @@ grunt.initConfig({
 			browser: true,
 			devel: true,
 			globals: {
-				// request
-				'request': true
 			}
 		}
 	},
@@ -59,17 +56,9 @@ grunt.initConfig({
 	},
 	watch: {
 		files: [
-			'bcs.js',
-			'test/*.js'
+			'bcs.js'
 		],
 		tasks: 'default'
-	},
-	
-	copy: {
-		main: {
-			src: 'vendor/js/request.js',
-			dest: 'site/dist/request.js'
-		}
 	},
 	
 	// See https://github.com/thanpolas/grunt-github-pages for pre-requisites
