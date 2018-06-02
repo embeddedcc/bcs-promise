@@ -179,7 +179,7 @@ BCS.Device = (function () {
 		}
 
 		if(this.options.auth) {
-			this.headers = { Authorization: 'Basic ' + base64.encode(username + ":" + password) };
+			this.headers = { Authorization: 'Basic ' + btoa(this.options.auth.username + ":" + this.options.auth.password) };
 		} else {
 		  this.headers = {};
 		}
