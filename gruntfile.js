@@ -36,6 +36,7 @@ grunt.initConfig({
 			// environment
 			browser: true,
 			devel: true,
+			esversion: 6,
 			globals: {
 			}
 		}
@@ -88,7 +89,7 @@ grunt.initConfig({
 
 // Load helpers
 grunt.loadNpmTasks('grunt-contrib-jshint');
-grunt.loadNpmTasks('grunt-contrib-uglify');
+grunt.loadNpmTasks('grunt-contrib-uglify-es');
 grunt.loadNpmTasks('grunt-contrib-watch');
 grunt.loadNpmTasks('grunt-contrib-copy');
 grunt.loadNpmTasks('grunt-github-pages');
